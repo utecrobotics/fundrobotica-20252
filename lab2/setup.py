@@ -25,6 +25,7 @@ setup(
         'console_scripts': [
         	'publisher = lab2.nodo_pub:main',
         	'subscriber = lab2.nodo_sub:main',
+        	'nodeJoints = lab2.node_joints:main',
         ],
     },
 )
