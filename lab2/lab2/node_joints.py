@@ -3,7 +3,7 @@ import rclpy
 import threading
 from sensor_msgs.msg import JointState
 
-def main()
+def main():
  rclpy.init()
  # Declarar el nombre del nodo
  node = rclpy.create_node('JointsNode')
