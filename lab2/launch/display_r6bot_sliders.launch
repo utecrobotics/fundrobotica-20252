@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-  <let name="urdf_path" value = "$(find-pkg-share ros2_control_demo_example_7)/urdf/r6bot.urdf.xacro" />
+  <let name="urdf_path" value = "$(find-pkg-share lab2)/urdf/r6bot.urdf.xacro" />
 
   <node pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui" />
 
