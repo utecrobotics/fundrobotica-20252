@@ -40,6 +40,68 @@ def fkine_ur5(q):
   return T
 
 
+def jacobian_position(q, delta=0.0001):
+ """
+ Jacobiano analitico para la posicion de un brazo robotico de n grados de libertad. 
+ Retorna una matriz de 3xn y toma como entrada el vector de configuracion articular 
+ q=[q1, q2, q3, ..., qn]
+ """
+ # Determinar la cantidad de articulaciones
+ #n =
+ # Crear una matriz 3xn 
+ #J = 
+ # Calcular la transformacion homogenea inicial (usando q)
+ 
+    
+ # Iteracion para la derivada de cada articulacion (columna)
+ for i in range(n):
+  # Copiar la configuracion articular inicial
+  dq = copy(q)
+  # Calcular nuevamenta la transformacion homogenea e
+  # Incrementar la articulacion i-esima usando un delta, 
+  # usar la copia de configuración inicial
+  
+  # Transformacion homogenea luego del incremento (q+delta)
+  
+  # Aproximacion del Jacobiano de posicion usando diferencias finitas
+
+ return J
+
+
+def ikine(xdes, q0):
+ """
+ Calcular la cinematica inversa de un brazo robotico numericamente a partir 
+ de la configuracion articular inicial de q0. Emplear el metodo de newton.
+ """
+ epsilon  = 0.001
+ max_iter = 1000
+ delta    = 0.00001
+
+ q  = copy(q0)
+ for i in range(max_iter):
+  # Main loop
+  pass
+    
+ return q
+
+
+def ik_gradient(xdes, q0):
+ """
+ Calcular la cinematica inversa de un brazo robotico numericamente a partir 
+ de la configuracion articular inicial de q0. Emplear el metodo gradiente.
+ """
+ epsilon  = 0.001
+ max_iter = 1000
+ delta    = 0.00001
+
+ q  = copy(q0)
+ for i in range(max_iter):
+  # Main loop
+  pass
+    
+ return q
+
+
 def rot2quat(R):
   """
   Convertir una matriz de rotacion en un cuaternion
