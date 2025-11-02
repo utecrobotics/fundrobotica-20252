@@ -54,73 +54,49 @@ def jacobian_position(q, delta=0.0001):
     # Crear una matriz 3xn 
     J = np.zeros((3, n))
     # Calcular la transformacion homogenea inicial (usando q)
-    T0 = fkine_ur5(q)
-    x0 = T0[0:3, 3]
 
     # Iteracion para la derivada de cada articulacion (columna)
     for i in range(n):
         # Copiar la configuracion articular inicial
         dq = copy(q)
+        
         # Calcular nuevamenta la transformacion homogenea e
         # Incrementar la articulacion i-esima usando un delta, 
         # usar la copia de configuración inicial
-        dq[i] += delta
-        Ti = fkine_ur5(dq)
 
         # Transformacion homogenea luego del incremento (q+delta)
-        xi = Ti[0:3, 3]
 
         # Aproximacion del Jacobiano de posicion usando diferencias finitas
-        J[:, i] = (xi - x0) / delta
 
     return J
 
 
-def ikine(xdes, q0):
+def jacobian_pose(q, delta=0.0001):
     """
-    Calcular la cinematica inversa de un brazo robotico numericamente a partir 
-    de la configuracion articular inicial de q0. Emplear el metodo de newton.
+    Jacobiano analitico para la posicion y orientacion de un brazo robotico de n grados de libertad. 
+    Retorna una matriz de 7xn y toma como entrada el vector de configuracion articular 
+    q=[q1, q2, q3, ..., qn]
     """
-    epsilon  = 0.001
-    max_iter = 1000
-    delta    = 0.00001
+    # Determinar la cantidad de articulaciones
+    n = q.size
+    # Crear una matriz 3xn 
+    J = np.zeros((7, n))
+    # Calcular la transformacion homogenea inicial (usando q)
 
-    q  = copy(q0)
+    # Iteracion para la derivada de cada articulacion (columna)
+    for i in range(n):
+        # Copiar la configuracion articular inicial
+        dq = copy(q)
+        
+        # Calcular nuevamenta la transformacion homogenea e
+        # Incrementar la articulacion i-esima usando un delta, 
+        # usar la copia de configuración inicial
 
-    # Main loop
-    for i in range(max_iter):
-        J = jacobian_position(q, delta)
-        T = fkine_ur5(q)
-        f = T[0:3, 3]
-        e = xdes-f
-        q = q + np.dot(np.linalg.pinv(J), e)
-        if (np.linalg.norm(e) < epsilon):
-            break
-    return q
+        # Transformacion homogenea luego del incremento (q+delta)
 
+        # Aproximacion del Jacobiano de posicion usando diferencias finitas
 
-def ik_gradient(xdes, q0):
-    """
-    Calcular la cinematica inversa de un brazo robotico numericamente a partir 
-    de la configuracion articular inicial de q0. Emplear el metodo gradiente.
-    """
-    epsilon  = 0.001
-    max_iter = 1000
-    delta    = 0.00001
-    alpha    = 0.1
-
-    q  = copy(q0)
-
-    for i in range(max_iter):
-        J = jacobian_position(q, delta)
-        T = fkine_ur5(q)
-        f = T[0:3, 3]
-        e = xdes-f
-        q = q + alpha * np.dot(J.T, e)
-        if (np.linalg.norm(e) < epsilon):
-            break
-
-    return q
+    return J
 
 
 def rot2quat(R):
