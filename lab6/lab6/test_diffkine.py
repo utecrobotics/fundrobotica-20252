@@ -6,8 +6,7 @@ from markers import *
 from lab6functions import *
 from sensor_msgs.msg import JointState
 
-if __name__ == '__main__':
-
+def main():
   rclpy.init()
   node = rclpy.create_node('testKinematicControlPosition')
   pub = node.create_publisher(JointState, 'joint_states', 10)
@@ -21,8 +20,8 @@ if __name__ == '__main__':
   fq = open("/home/<user>/q.txt", "w")
 
   # Markers for the current and desired positions
-  bmarker_current  = BallMarker(color['RED'])
-  bmarker_desired = BallMarker(color['GREEN'])
+  bmarker_current  = FrameMarker(node)
+  bmarker_desired = FrameMarker(node)
 
   # Joint names
   jnames = ['shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
@@ -57,7 +56,7 @@ if __name__ == '__main__':
   # Initial joint configuration
   q = copy(q0)
   # Main loop
-  while not rospy.is_shutdown():
+  while rclpy.ok():
     
     # Current time (needed for ROS)
     jstate.header.stamp = node.get_clock().now().to_msg()
@@ -76,7 +75,7 @@ if __name__ == '__main__':
              str(q[4])+" "+str(q[5])+"\n")
         
     # Publish the message
-    jstate.position = q
+    jstate.position = q.tolist()
     pub.publish(jstate)
     bmarker_desired.xyz(xd)
     bmarker_current.xyz(x)
@@ -87,3 +86,6 @@ if __name__ == '__main__':
   fxcurrent.close()
   fxdesired.close()
   fq.close()
+
+if __name__ == '__main__':
+  main()
