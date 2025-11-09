@@ -63,7 +63,7 @@ def main():
     # Kinematic control law for position (complete here)
     # -----------------------------
 
-    q = 
+    # q = 
         
     # -----------------------------
 
