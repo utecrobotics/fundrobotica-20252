@@ -3,13 +3,12 @@ import rclpy
 import threading
 import numpy as np
 from sensor_msgs.msg import JointState
-#from markers import *
+from markers import *
 from functions import *
 
 import rbdl
 
-if __name__ == '__main__':
-
+def main():
   rclpy.init()
   node = rclpy.create_node('control_pdg')
   pub = node.create_publisher(JointState, 'joint_states', 10)
@@ -53,7 +52,7 @@ if __name__ == '__main__':
   # Frecuencia del envio (en Hz)
   freq = 20
   dt = 1.0/freq
-  rate = rospy.Rate(freq)
+  rate = node.create_rate(freq)
   
   # Simulador dinamico del robot
   robot = Robot(q, dq, dt)
@@ -64,7 +63,7 @@ if __name__ == '__main__':
   
   # Bucle de ejecucion continua
   t = 0.0
-  while not rospy.is_shutdown():
+  while rclpy.ok():
   
     # Leer valores del simulador
     q  = robot.read_joint_positions()
@@ -72,7 +71,7 @@ if __name__ == '__main__':
     # Posicion actual del efector final
     x = ur5_fkine(q)[0:3,3]
     # Tiempo actual (necesario como indicador para ROS)
-    jstate.header.stamp = rospy.Time.now()
+    jstate.header.stamp = node.get_clock().now().to_msg()
 
     # Almacenamiento de datos
     fxact.write(str(t)+' '+str(x[0])+' '+str(x[1])+' '+str(x[2])+'\n')
@@ -106,3 +105,10 @@ if __name__ == '__main__':
   fqdes.close()
   fxact.close()
   fxdes.close()
+  
+  node.destroy_node()
+  rclpy.shutdown()
+
+
+if __name__ == '__main__':
+  main()
