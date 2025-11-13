@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
-
-import rospy
+import rclpy
+import threading
+import numpy as np
 from sensor_msgs.msg import JointState
 from markers import *
 from functions import *
-from roslib import packages
 
 import rbdl
 
 if __name__ == '__main__':
 
-  rospy.init_node("control_pdg")
-  pub = rospy.Publisher('joint_states', JointState, queue_size=1000)
+  rclpy.init()
+  node = rclpy.create_node('control_dininv')
+  pub = node.create_publisher(JointState, 'joint_states', 10)
   
-  bmarker_actual  = BallMarker(color['RED'])
-  bmarker_deseado = BallMarker(color['GREEN'])
+  thread = threading.Thread(target=rclpy.spin, args=(node, ), daemon=True)
+  thread.start()
+  
+  #bmarker_actual  = BallMarker(color['RED'])
+  #bmarker_deseado = BallMarker(color['GREEN'])
 
   # Archivos donde se almacenara los datos
   fqact = open("/tmp/qactual.txt", "w")
@@ -49,7 +53,7 @@ if __name__ == '__main__':
   # Posicion resultante de la configuracion articular deseada
   xdes = ur5_fkine(qdes)[0:3,3]
   # Copiar la configuracion articular en el mensaje a ser publicado
-  jstate.position = q
+  jstate.position = q.tolist()
   pub.publish(jstate)
 
   # Definir metodos de Pinocchio para el UR5
@@ -58,7 +62,7 @@ if __name__ == '__main__':
   # Frecuencia del envio (en Hz)
   freq = 20
   dt = 1.0/freq
-  rate = rospy.Rate(freq)
+  rate = node.create_rate(freq)
 
   # Simulador dinamico del robot
   robot = Robot(q, dq, ndof, dt)
@@ -96,10 +100,10 @@ if __name__ == '__main__':
     robot.send_command(u)
 
     # Publicacion del mensaje
-    jstate.position = q
+    jstate.position = q.tolist()
     pub.publish(jstate)
-    bmarker_deseado.xyz(xdes)
-    bmarker_actual.xyz(x)
+    #bmarker_deseado.xyz(xdes)
+    #bmarker_actual.xyz(x)
     t = t+dt
     # Esperar hasta la siguiente  iteracion
     rate.sleep()
