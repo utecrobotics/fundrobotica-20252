@@ -8,7 +8,7 @@ from functions import *
 
 import rbdl
 
-if __name__ == '__main__':
+def main():
 
   rclpy.init()
   node = rclpy.create_node('control_dininv')
@@ -32,7 +32,7 @@ if __name__ == '__main__':
   # Objeto (mensaje) de tipo JointState
   jstate = JointState()
   # Valores del mensaje
-  jstate.header.stamp = rospy.Time.now()
+  jstate.header.stamp = node.get_clock().now().to_msg()
   jstate.name = jnames
 
   # =============================================================
@@ -75,7 +75,7 @@ if __name__ == '__main__':
   Kp = np.diag(valores)
   Kd = 2*np.sqrt(Kp)
 
-  while not rospy.is_shutdown():
+  while rclpy.ok():
 
     # Leer valores del simulador
     q  = robot.read_joint_positions()
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     # Posicion actual del efector final
     x = ur5_fkine(q)[0:3,3]
     # Tiempo actual (necesario como indicador para ROS)
-    jstate.header.stamp = rospy.Time.now()
+    jstate.header.stamp = node.get_clock().now().to_msg()
 
     # Almacenamiento de datos
     fxact.write(str(t)+' '+str(x[0])+' '+str(x[1])+' '+str(x[2])+'\n')
@@ -112,3 +112,10 @@ if __name__ == '__main__':
   fqdes.close()
   fxact.close()
   fxdes.close()
+
+  node.destroy_node()
+  rclpy.shutdown()
+
+ 
+if __name__ == '__main__':
+  main()
