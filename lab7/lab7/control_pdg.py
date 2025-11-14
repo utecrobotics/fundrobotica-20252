@@ -13,6 +13,9 @@ def main():
   node = rclpy.create_node('control_pdg')
   pub = node.create_publisher(JointState, 'joint_states', 10)
   
+  thread = threading.Thread(target=rclpy.spin, args=(node, ), daemon=True)
+  thread.start()
+  
   #bmarker_actual  = BallMarker(color['RED'])
   #bmarker_deseado = BallMarker(color['GREEN'])
   
