@@ -1,5 +1,4 @@
 import rbdl
-import PyKDL
 import numpy as np
 from copy import copy
 from urdf_parser_py.urdf import URDF
