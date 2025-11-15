@@ -1,8 +1,6 @@
 import rbdl
 import numpy as np
 from copy import copy
-from urdf_parser_py.urdf import URDF
-from kdl_parser_py.urdf import treeFromUrdfModel
 
 pi = np.pi
 
